@@ -1,0 +1,9 @@
+entrypoint = "index.js"
+modules = ["bash:v1-20231215-e6d471c", "nodejs-20:v8-20230920-bd784b9", "nodejs-20:v8-20230920-bd784b9"]
+
+[nix]
+channel = "stable-23_05"
+
+[deployment]
+run = ["bash", "index.js"]
+deploymentTarget = "cloudrun"
