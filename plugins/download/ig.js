@@ -1,71 +1,94 @@
 import axios from 'axios';
+import qs from 'qs';
 import cheerio from 'cheerio';
 
-const handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) throw `Use ${usedPrefix + command} [!url]`;
-  conn.sendMessage(m.chat, { react: { text: '🕒', key: m.key } });
-
+async function igdl(url) {
   try {
-    const res = await igdl(text);
-    conn.sendFile(m.chat, res.media[0], '', "success", m);
-  } catch (e) {
-    console.log(e);
-    conn.reply(m.chat, "An error occured", m);
+    const response = await axios({
+      method: 'post',
+      url: 'https://v3.igdownloader.app/api/ajaxSearch',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept': '*/*'
+      },
+      data: qs.stringify({
+        recaptchaToken: '',
+        q: url,
+        t: 'media',
+        lang: 'en'
+      })
+    });
+
+    const $ = cheerio.load(response.data.data);
+    const result = [];
+    $('ul.download-box li').each((index, element) => {
+      const thumbnail = $(element).find('.download-items__thumb img').attr('src');
+      const options = [];
+      let videoUrl = '';
+      let audioUrl = '';
+      let caption = $(element).find('.photo-caption').text().trim();
+      $(element).find('.photo-option select option').each((i, opt) => {
+        const resolution = $(opt).text();
+        const url = $(opt).attr('value');
+        if (resolution.toLowerCase().includes('video')) {
+          videoUrl = url;
+        } else if (resolution.toLowerCase().includes('audio')) {
+          audioUrl = url;
+        } else {
+          options.push({
+            resolution: resolution,
+            url: url
+          });
+        }
+      });
+      const download = $(element).find('.download-items__btn a').attr('href');
+
+      result.push({
+        thumbnail: thumbnail,
+        options: options,
+        video: videoUrl,
+        audio: audioUrl,
+        download: download,
+        caption: caption
+      });
+    });
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    return m.reply(`Gunakan perintah dengan URL Instagram.\nContoh: ${usedPrefix + command} https://www.instagram.com/p/xxxxx/`);
+  }
+  m.reply('Tunggu sebentar...');
+  
+  const result = await igdl(text);
+  if (!result.length) {
+    return m.reply('Gagal mengunduh media. Pastikan URL yang diberikan benar dan coba lagi.');
+  }
+
+  for (const item of result) {
+    if (item.video) {
+      await conn.sendFile(m.chat, item.video, 'video.mp4', item.caption, m);
+    } else if (item.options.length) {
+      const photoUrl = item.options[0].url;
+      await conn.sendFile(m.chat, photoUrl, 'image.jpg', item.caption, m);
+    } else {
+      await conn.sendFile(m.chat, item.download, 'file', item.caption, m);
+    }
+    // Kirimkan audio jika tersedia
+    if (item.audio) {
+      await conn.sendFile(m.chat, item.audio, 'audio.mp3', 'Ini adalah audio dari media yang Anda minta.', m);
+    }
   }
 };
 
-// please follow the channel https://whatsapp.com/channel/0029VaddOXtAInPl84jp7Q1p for the next feature
-
-handler.menudownload = ['ig <url>'];
-handler.tagsdownload = ['search'];
-handler.command = /^(ig|igdl|instagram)$/i;
+handler.menudownload = ['igdl <url>'];
+handler.tagsdownload = ['downloader'];
+handler.command = ["ig", "igdl", "instagram"];
 
 export default handler;
-
-async function igdl(url) {
-  return new Promise(async (resolve, reject) => {
-    const payload = new URLSearchParams(
-      Object.entries({
-        url: url,
-        host: "instagram",
-      }),
-    );
-    await axios
-      .request({
-        method: "POST",
-        baseURL: "https://saveinsta.io/core/ajax.php",
-        data: payload,
-        headers: {
-          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-          cookie: "PHPSESSID=rmer1p00mtkqv64ai0pa429d4o",
-          "user-agent":
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36",
-        },
-      })
-      .then((response) => {
-        const $ = cheerio.load(response.data);
-        const mediaURL = $(
-          "div.row > div.col-md-12 > div.row.story-container.mt-4.pb-4.border-bottom",
-        )
-          .map((_, el) => {
-            return (
-              "https://saveinsta.io/" +
-              $(el).find("div.col-md-8.mx-auto > a").attr("href")
-            );
-          })
-          .get();
-        const res = {
-          status: 200,
-          media: mediaURL,
-        };
-        resolve(res);
-      })
-      .catch((e) => {
-        console.log(e);
-        throw {
-          status: 400,
-          message: "error",
-        };
-      });
-  });
-}
