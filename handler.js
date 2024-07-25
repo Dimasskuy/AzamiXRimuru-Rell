@@ -1151,6 +1151,7 @@ export async function handler(chatUpdate) {
 							console.error(e)
 						}
 					}
+					if (m.limit) m.reply(+m.limit + " Limit terpakai");
 				}
 				break
 			}
@@ -1282,7 +1283,7 @@ global.dfail = (type, m, conn) => {
 		rowner: `*「OWNERR BOT ONLY」*`,
 		owner: `*「OWNER BOT ONLY」*`,
 		mods: `*「DEV / MODS ONLY」*`,
-		premium: `*「PREMIUM USER ONLY」*\n\n*Or Free to Use All Commands in the Group :*\n${db.data.datas.linkgc || 'https://chat.whatsapp.com/EzxQmm6lU7206XIMZ32wqs'}\n\nOtherwise type this : *.privatecmd*`,
+		premium: `*「PREMIUM USER ONLY」*\n\n*Or Free to Use All Commands in the Group :*\n${db.data.datas.linkgc || 'https://chat.whatsapp.com/DXPU5F2cePXEaysvcImdUy'}\n\nOtherwise type this : *.privatecmd*`,
 		group: `*「GROUP ONLY」*`,
 		private: `*「PRIVATE CHAT ONLY」*`,
 		admin: `*「ADMIN GROUP ONLY」*`,
