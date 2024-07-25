@@ -4,7 +4,7 @@ import { isNumber, readMore, somematch } from '../../lib/func.js'
 const items = {
 	buy: {
 		limit: {
-			money: 10000
+			money: 45000,
 		},
 		potion: {
 			money: 1250,
