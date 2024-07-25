@@ -47,7 +47,7 @@ const defaultMenu = {
 > *XP*: %totalexp
 
 *NOTE* :
-*_Jika Ada Fitur Yang Error, Tolong Segera Lapor Kepada Owner. Dengan Mengetik (.ʀᴇᴘᴏʀᴛ)._*
+Jika Ada Fitur Yang Error, Tolong Segera Lapor Kepada Owner. Dengan Menghubungi Email : rimurubeta@neko2.net
 
 `.trimStart(),
 	header: '╭─「 %category 」',
