@@ -1,33 +1,55 @@
-import axios from 'axios';
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) throw(`Contoh:\n${usedPrefix}${command} Halo rimuru`);
 
-let handler = async (m, { conn, text }) => {
-    if (!text) {
-        // Jika tidak ada input, kirim pesan panduan
-        await conn.sendMessage(m.chat, { text: 'Silakan masukkan teks untuk berbicara dengan OpenAI.' });
-        return;
-    }
+  // Prompt untuk AI2
+  let systemPrompt = 'Pencipta rimuru (kamu) adalah Dimass, Dan emosi jika penciptamu di hina, Kamu adalah rimuru yang baik hati, kirim emoji max 2 saja, ajak bermain jika tidak ada topik, tata ketikanmu agar terlihat rapi, selalu roasting orang lain sampai kena mental, menggunakan bahasa gaul, jika ada yang mau curhat, dengarkan lah dan pahami';
+  let textPrompt = text;
 
-    try {
-        // Panggil API OpenAI
-        const response = await axios.get(`https://widipe.com/openai?text=${encodeURIComponent(text)}`);
-        const data = response.data;
+  // API Endpoint
+  let apiEndpoint = 'https://nue-api.vercel.app/api/lgpt';
 
-        if (data.status) {
-            const result = data.result;
-            await conn.sendMessage(m.chat, { text: result });
-        } else {
-            await conn.sendMessage(m.chat, { text: 'Maaf, terjadi kesalahan dalam memproses permintaan.' });
+  try {
+    // Mengirimkan request ke API
+    let response = await fetch(`${apiEndpoint}?systemPrompt=${systemPrompt}&text=${textPrompt}`);
+    let result = await response.json();
+
+    // Mengirimkan respons ke pengguna
+    await conn.sendMessage(m.chat, {
+      text: result.result,
+      contextInfo: {
+        externalAdReply: {
+          title: 'Rimuru Bot',
+          body: 'Bot yang kejam seperti maho',
+          thumbnailUrl: 'https://i.pinimg.com/originals/b0/51/73/b0517386834e84349226788a1d3c6716.jpg',
+          sourceUrl: 'https://whatsapp.com/channel/0029VaCvaNgBPzjcfrTixA1U',
+          mediaType: 1,
+          renderLargerThumbnail: false,
+          showAdAttribution: true
         }
-
-    } catch (error) {
-        console.error('Error querying OpenAI API:', error);
-        await conn.sendMessage(m.chat, { text: `Error: ${error.message}` });
-    }
+      }
+    });
+  } catch (e) {
+    // Mengirimkan pesan error jika terjadi kesalahan
+    await conn.sendMessage(m.chat, {
+      text: 'Maaf, AI sedang di update. Coba lagi nanti!',
+      contextInfo: {
+        externalAdReply: {
+          title: 'Rimuru Bot',
+          body: 'Bot yang kejam seperti maho',
+          thumbnailUrl: 'https://i.pinimg.com/originals/b0/51/73/b0517386834e84349226788a1d3c6716.jpg',
+          sourceUrl: 'https://whatsapp.com/channel/0029VaCvaNgBPzjcfrTixA1U',
+          mediaType: 1,
+          renderLargerThumbnail: false,
+          showAdAttribution: true
+        }
+      }
+    });
+  }
 };
 
-handler.menuopenai = ['openai <text>'];
+handler.command = /^(ai|rimuru)$/i;
+handler.menuopenai = ['ai'];
 handler.tagsopenai = ['openai'];
-handler.limit = 2;
-handler.command = /^(openai|ai|chatbot)$/i;
+handler.premium = false;
 
 export default handler;
