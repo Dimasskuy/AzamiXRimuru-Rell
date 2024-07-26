@@ -36,7 +36,8 @@ handler.menugroup = ['warn']
 handler.tagsgroup = ['group']
 handler.command = ['warn'] 
 handler.group = true
-handler.owner = true
+handler.owner = false
+handler.admin = true
 handler.botAdmin = true
 
 export default handler;
