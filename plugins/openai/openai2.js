@@ -25,8 +25,8 @@ let handler = async (m, { conn, text }) => {
     }
 };
 
-handler.menuopenai = ['openai2 <text>'];
-handler.tagsopenai = ['openai2'];
+handler.menuopenai = ['ai2'];
+handler.tagsopenai = ['openai'];
 handler.limit = 1;
 handler.command = /^(openai2|ai2)$/i;
 
