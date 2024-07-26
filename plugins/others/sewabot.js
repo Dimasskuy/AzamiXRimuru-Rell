@@ -3,6 +3,7 @@ import db from '../../lib/database.js'
 let handler = async (m, { conn, command }) => {
 	let txt = db.data.datas.teksjadibot || `*[ Chat Creator ]*
 wa.me/6282257529886
+atau Bisa Hubungi Email : rimurubeta@neko2.net 
 
 ╔╣ *PREMIUM USER*
 ║ • Infinity Limit
