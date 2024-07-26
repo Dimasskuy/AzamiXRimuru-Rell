@@ -25,6 +25,8 @@ global.APIKeys = { // APIKey Here
 	'https://api.lolhuman.xyz': '6b41ac3af6aba104e790d98f'
 }
 
+global.maxwarn = '3' // Peringatan maksimum
+
 global.multiplier = 69 // The higher, The harder levelup
 
 global.rpg = {
