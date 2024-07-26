@@ -7,7 +7,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 
     let url = `https://api.fumifumi.xyz/api/text2img?query=${text}`;
-    conn.sendFile(m.chat, url, null, `*Hasil Gambar dari ${text}*`, m);
+    conn.sendFile(m.chat, url, null, `*Hasil Gambar prompt [${text}]*`, m);
 }
 
 handler.menuopenai = ['txt2img'];
