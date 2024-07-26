@@ -90,5 +90,6 @@ let handler = async (m, { conn, text, args, usedPrefix, command }) => {
 handler.menudownload = ['ytplay <teks> / <url>']
 handler.tagsdownload = ['search']
 handler.command = /^(play|(play)?yt(play|dl)?)$/i
+handler.limit = true
 
 export default handler
