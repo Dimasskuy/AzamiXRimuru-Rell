@@ -24,6 +24,7 @@ handler.tagsgroup = ['group']
 handler.command = ['delwarn', 'unwarn'] 
 handler.group = true
 handler.owner = false
+handler.admin = true
 handler.botAdmin = true
 
 export default handler;
