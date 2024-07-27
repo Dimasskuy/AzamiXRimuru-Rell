@@ -67,7 +67,7 @@
 		"jsdom": "^22.1.0",
 		"link-preview-js": "^3.0.5",
 		"lodash": "^4.17.21",
-		"lowdb": "^2.1.0",
+		"lowdb": "^5.1.0",
 		"moment-timezone": "^0.5.43",
 		"mongoose": "^6.0.14",
 		"node-fetch": "^3.2.0",
