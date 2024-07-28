@@ -88,7 +88,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 };
 
 handler.menudownload = ['igdl <url>'];
-handler.tagsdownload = ['downloader'];
+handler.tagsdownload = ['search'];
 handler.command = ["ig", "igdl", "instagram"];
 
 export default handler;
