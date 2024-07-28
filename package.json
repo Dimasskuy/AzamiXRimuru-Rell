@@ -60,7 +60,7 @@
 		"genshin-db": "^4.3.16",
 		"genius-lyrics": "*",
 		"google-it": "^1.6.4",
-		"got": "^13.0.0",
+		"got": "^12.6.1",
 		"got-scraping": "^4.0.1",
 		"human-readable": "^0.2.1",
 		"imagemaker.js": "^2.0.4",
