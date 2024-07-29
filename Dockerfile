@@ -16,4 +16,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["node", "--max-old-space-size=4096", "index.js"]
+CMD ["nohup", "node", "index.js", "&"]
