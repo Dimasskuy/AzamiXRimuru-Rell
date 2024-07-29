@@ -59,7 +59,7 @@ const server = createServer((req, res) => {
   const parsedUrl = parse(req.url, true);
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello, Koyeb!\n');
+  res.end('Hello, Koyeb and Vercel!\n');
 });
 
 const PORT = process.env.PORT || 3000;
