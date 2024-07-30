@@ -31,12 +31,9 @@ jobs:
       - name: Install step
         run: "npm install --save --production"
 
-      - name: Build step
-        run: "nohup node index.js &"
-
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: "dimasskuy-azamixrimur-66"
-          entrypoint: "server.js"
+          entrypoint: "index.js"
           root: ""
