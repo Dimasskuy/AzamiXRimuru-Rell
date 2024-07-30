@@ -35,5 +35,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "dimasskuy-azamixrimur-66"
-          entrypoint: "index.js"
+          entrypoint: "index_koyeb.js"
           root: ""
