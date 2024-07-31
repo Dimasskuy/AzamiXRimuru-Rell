@@ -16,4 +16,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["node", "index_koyeb.js"]
+CMD ["node", "--max-old-space-size=2048", "index_koyeb.js"]
