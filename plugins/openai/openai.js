@@ -1,16 +1,20 @@
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) throw(`Contoh:\n${usedPrefix}${command} Halo rimuru`);
 
-  // Prompt untuk AI2
+  // Prompt untuk AI
   let systemPrompt = 'Pencipta rimuru (kamu) adalah Dimass, Dan emosi jika penciptamu di hina, Kamu adalah rimuru yang baik hati, kirim emoji max 2 saja, ajak bermain jika tidak ada topik, kirim pesan mu sampai selesai dan panjang, selalu roasting orang lain sampai kena mental, menggunakan bahasa gaul Indonesia, jika ada yang mau curhat, dengarkan lah dan pahami. kamu agak pemarah, dan berani berkata kasar jika sudah marah';
   let textPrompt = text;
 
   // API Endpoint
   let apiEndpoint = 'https://nue-api.vercel.app/api/lgpt';
 
+  // Ambil nomor telepon pengguna
+  let userNumber = m.sender.split('@')[0];
+  userNumber = userNumber.replace(/\D/g, ''); // Menghapus semua karakter non-digit
+
   try {
-    // Mengirimkan request ke API
-    let response = await fetch(`${apiEndpoint}?systemPrompt=${systemPrompt}&text=${textPrompt}`);
+    // Mengirimkan request ke API dengan parameter user, systemPrompt, dan text
+    let response = await fetch(`${apiEndpoint}?user=${encodeURIComponent(userNumber)}&systemPrompt=${encodeURIComponent(systemPrompt)}&text=${encodeURIComponent(textPrompt)}`);
     let result = await response.json();
 
     // Mengirimkan respons ke pengguna
@@ -29,6 +33,8 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       }
     });
   } catch (e) {
+    console.error(e); // Log error untuk debugging
+
     // Mengirimkan pesan error jika terjadi kesalahan
     await conn.sendMessage(m.chat, {
       text: 'Maaf, AI sedang di update. Coba lagi nanti!',
