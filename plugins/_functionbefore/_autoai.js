@@ -25,38 +25,12 @@ export async function before(m, { conn }) {
     let result = await response.json();
 
     // Mengirimkan respons ke pengguna
-    await conn.sendMessage(m.chat, {
-      text: result.result,
-      contextInfo: {
-        externalAdReply: {
-          title: 'Rimuru Bot',
-          body: 'Bot yang kejam seperti maho',
-          thumbnailUrl: 'https://i.pinimg.com/originals/b0/51/73/b0517386834e84349226788a1d3c6716.jpg',
-          sourceUrl: 'https://whatsapp.com/channel/0029VaCvaNgBPzjcfrTixA1U',
-          mediaType: 1,
-          renderLargerThumbnail: false,
-          showAdAttribution: true
-        }
-      }
-    });
+    await conn.sendMessage(m.chat, { text: result.result });
   } catch (e) {
     console.error(e); // Log error untuk debugging
 
     // Mengirimkan pesan error jika terjadi kesalahan
-    await conn.sendMessage(m.chat, {
-      text: 'Maaf, AI sedang di update. Coba lagi nanti!',
-      contextInfo: {
-        externalAdReply: {
-          title: 'Rimuru Bot',
-          body: 'Bot yang kejam seperti maho',
-          thumbnailUrl: 'https://i.pinimg.com/originals/b0/51/73/b0517386834e84349226788a1d3c6716.jpg',
-          sourceUrl: 'https://whatsapp.com/channel/0029VaCvaNgBPzjcfrTixA1U',
-          mediaType: 1,
-          renderLargerThumbnail: false,
-          showAdAttribution: true
-        }
-      }
-    });
+    await conn.sendMessage(m.chat, { text: 'Maaf, AI sedang di update. Coba lagi nanti!' });
   }
 }
 
