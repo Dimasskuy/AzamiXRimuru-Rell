@@ -6,7 +6,7 @@ import { join } from 'path'
 import fs from 'fs'
 
 let tagsfun = {
-	'rpg': '🎮 *RPG*',
+	'rpg': '🎮 *RPG (coming soon)*',
 	'game': '🎮 *GAMES*',
 	'anonim': '🎩 *ANONYMOUS*',
 	'kerang': '🐚 *KERANG AJAIB*',
