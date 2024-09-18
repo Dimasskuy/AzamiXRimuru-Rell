@@ -1,95 +1,81 @@
-import ytdl from 'ytdl-core'
-import yts from 'yt-search'
-import { youtubeSearch, youtubedl } from '@bochilteam/scraper-sosmed'
-import { somematch, isUrl, niceBytes } from '../../lib/func.js'
+import search from 'yt-search';
+import { youtube } from 'btch-downloader';
 
-let handler = async (m, { conn, text, args, usedPrefix, command }) => {
-	if (!text) throw `Example: ${usedPrefix + command} Sia Unstopable`
-	let url = ''
-	if (isUrl(text)) {
-		url = text
-		try {
-			let anu = await yts( { videoId: await ytdl.getURLVideoID(url) } )
-			let txt = `📌 *${anu.title}*\n\n`
-			+ `🪶 *Author :* ${anu.author.name}\n`
-			+ `⏲️ *Published :* ${anu.ago}\n`
-			+ `⌚ *Duration :* ${anu.duration.timestamp}\n`
-			+ `👁️ *Views :* ${anu.views}\n`
-			+ `🌀 *Url :* ${url}`
-			await conn.sendMsg(m.chat, { image: { url: anu.thumbnail }, caption: txt }, { quoted: m })
-		} catch (e) {
-			console.log(e)
-			try {
-				let anu = await youtubeSearch(url)
-				anu = anu.video[0]
-				let txt = `📌 *${anu.title}*\n\n`
-				+ `🪶 *Author :* ${anu.authorName}\n`
-				+ `⏲️ *Published :* ${anu.publishedTime}\n`
-				+ `⌚ *Duration :* ${anu.durationH}\n`
-				+ `👁️ *Views :* ${anu.viewH}\n`
-				+ `🌀 *Url :* ${anu.url}`
-				await conn.sendMsg(m.chat, { image: { url: anu.thumbnail.split("?")[0] }, caption: txt }, { quoted: m })
-			} catch (e) {
-				console.log(e)
-				return m.reply('invalid url')
-			}
-		}
-	} else {
-		try {
-			let anu = await yts(text)
-			anu = anu.all[0]
-			url = anu.url
-			let txt = `📌 *${anu.title}*\n\n`
-			+ `🪶 *Author :* ${anu.author.name}\n`
-			+ `⏲️ *Published :* ${anu.ago}\n`
-			+ `${(anu.duration && anu.duration.timestamp) ? `⌚ *Duration :* ${anu.duration.timestamp}\n` : ''}`
-			+ `👁️ *Views :* ${anu.views}\n`
-			+ `🌀 *Url :* ${url}`
-			await conn.sendMsg(m.chat, { image: { url: anu.thumbnail }, caption: txt }, { quoted: m })
-		} catch (e) {
-			console.log(e)
-			try {
-				let anu = await youtubeSearch(text)
-				anu = anu.video[0]
-				url = anu.url
-				let txt = `📌 *${anu.title}*\n\n`
-				+ `🪶 *Author :* ${anu.authorName}\n`
-				+ `⏲️ *Published :* ${anu.publishedTime}\n`
-				+ `⌚ *Duration :* ${anu.durationH}\n`
-				+ `👁️ *Views :* ${anu.viewH}\n`
-				+ `🌀 *Url :* ${url}`
-				await conn.sendMsg(m.chat, { image: { url: anu.thumbnail.split("?")[0] }, caption: txt }, { quoted: m })
-			} catch (e) {
-				console.log(e)
-				return m.reply(`Tidak ditemukan hasil.`)
-			}
-		}
-	}
-	if (!url) return
-	try {
-		let res = await youtubedl(url)
-		let data = res.audio[Object.keys(res.audio)[0]]
-		let site = await data.download()
-		if (data.fileSize > 400000) return m.reply(`Filesize: ${data.fileSizeH}\nTidak dapat mengirim, maksimal file 400 MB`)
-		await conn.sendMsg(m.chat, { audio: { url: site }, mimetype: 'audio/mpeg' }, { quoted : m })
-	} catch (e) {
-		console.log(e)
-		try {
-			let res = await ytdl.getURLVideoID(url)
-			let anu = await ytdl.getInfo(res)
-			anu = anu.formats.filter(v => v.mimeType.includes('audio/mp4'))[0]
-			let size = parseInt(anu.contentLength)
-			if (size > 400000000) return m.reply(`Filesize: ${niceBytes(size)}\nTidak dapat mengirim, maksimal file 400 MB`)
-			await conn.sendMsg(m.chat, { audio: { url: anu.url }, mimetype: 'audio/mpeg' }, { quoted : m })
-		} catch (e) {
-			console.log(e)
-		}
-	}
-}
+const handler = async (m, { conn, text, usedPrefix }) => {
+    if (!text) throw 'Enter Title / Link From YouTube!';
+    try {
+        const look = await search(text);
+        const convert = look.videos[0];
+        if (!convert) throw 'Video/Audio Tidak Ditemukan';
+        if (convert.seconds >= 3600) {
+            return conn.reply(m.chat, 'Video is longer than 1 hour!', m);
+        } else {
+            let audioUrl;
+            try {
+                audioUrl = await youtube(convert.url);
+            } catch (e) {
+                conn.reply(m.chat, 'Please wait...', m);
+                audioUrl = await youtube(convert.url);
+            }
 
-handler.menudownload = ['ytplay <teks> / <url>']
-handler.tagsdownload = ['search']
-handler.command = /^(play|(play)?yt(play|dl)?)$/i
-handler.limit = true
+            let caption = '';
+            caption += `∘ Title : ${convert.title}\n`;
+            caption += `∘ Ext : Search\n`;
+            caption += `∘ ID : ${convert.videoId}\n`;
+            caption += `∘ Duration : ${convert.timestamp}\n`;
+            caption += `∘ Viewers : ${convert.views}\n`;
+            caption += `∘ Upload At : ${convert.ago}\n`;
+            caption += `∘ Author : ${convert.author.name}\n`;
+            caption += `∘ Channel : ${convert.author.url}\n`;
+            caption += `∘ Url : ${convert.url}\n`;
+            caption += `∘ Description : ${convert.description}\n`;
+            caption += `∘ Thumbnail : ${convert.image}`;
 
-export default handler
+            await conn.relayMessage(m.chat, {
+                extendedTextMessage: {
+                    text: caption,
+                    contextInfo: {
+                        externalAdReply: {
+                            title: convert.title,
+                            mediaType: 1,
+                            previewType: 0,
+                            renderLargerThumbnail: true,
+                            thumbnailUrl: convert.image,
+                            sourceUrl: audioUrl.mp3
+                        }
+                    },
+                    mentions: [m.sender]
+                }
+            }, {});
+
+            await conn.sendMessage(m.chat, {
+                audio: {
+                    url: audioUrl.mp3
+                },
+                mimetype: 'audio/mpeg',
+                contextInfo: {
+                    externalAdReply: {
+                        title: convert.title,
+                        body: "",
+                        thumbnailUrl: convert.image,
+                        sourceUrl: audioUrl.mp3,
+                        mediaType: 1,
+                        showAdAttribution: true,
+                        renderLargerThumbnail: true
+                    }
+                }
+            }, {
+                quoted: m
+            });
+        }
+    } catch (e) {
+        conn.reply(m.chat, `*Error:* ` + e.message, m);
+    }
+};
+
+handler.menudownload = ['ytplay <teks> / <url>'];
+handler.tagsdownload = ['search'];
+handler.command = /^(play|(play)?yt(play|dl)?)$/i;
+handler.limit = true;
+
+export default handler;
