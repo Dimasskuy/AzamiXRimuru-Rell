@@ -1,3 +1,4 @@
+/** 
 import ytdl from 'ytdl-core'
 import { niceBytes } from '../../lib/func.js'
 import { youtubedl } from '@bochilteam/scraper-sosmed'
@@ -48,3 +49,4 @@ handler.premium = true
 handler.limit = false
 
 export default handler
+**/
